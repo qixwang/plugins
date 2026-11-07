@@ -7836,8 +7836,8 @@
     },
     {
       "path": "docs/harness/copilot-changes.md",
-      "sha256": "e853c4a61ed42d62bcab86a86ca85cafd61190c280148cb0d004f4eea8914825",
-      "bytes": 12535,
+      "sha256": "1677900c36f715b212b4d0fdb2940d1793dc2ba321cf8257b6ef165fad2a2e84",
+      "bytes": 12616,
       "cursorSignals": [
         "AskQuestion",
         "bun",

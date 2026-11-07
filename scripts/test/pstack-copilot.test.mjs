@@ -6,7 +6,7 @@ import { dirname, join, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { renderCopilot } from "../pstack-copilot.mjs";
-import { portableBytes } from "../pstack-files.mjs";
+import { executable, portableBytes } from "../pstack-files.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const pstack = join(root, "pstack");
@@ -174,4 +174,15 @@ test("committed runtime evidence binds the unchanged generator and helper, with 
   assert.equal(proof.report.status, "ready");
   assert.equal(proof.report.commands.length, 5);
   assert.doesNotMatch(JSON.stringify(proof), /C:\\\\Users\\\\|OneDrive|access_token|Authorization/);
+});
+
+test("Unix executable comparison observes filesystem bits rather than cached git modes", () => {
+  const path = join(pstack, "skills", "statechart", "scripts", "statechart");
+  const platform = Object.getOwnPropertyDescriptor(process, "platform");
+  try {
+    Object.defineProperty(process, "platform", { ...platform, value: "linux" });
+    assert.equal(executable(path), (statSync(path).mode & 0o111) !== 0);
+  } finally {
+    Object.defineProperty(process, "platform", platform);
+  }
 });
