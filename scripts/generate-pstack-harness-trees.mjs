@@ -3,6 +3,8 @@
 import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, posix, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { COPILOT_TREE, renderCopilot } from "./pstack-copilot.mjs";
+import { executable, portableBytes } from "./pstack-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PSTACK = join(ROOT, "pstack");
@@ -23,6 +25,11 @@ This folder is generated from \`pstack/skills\`, \`pstack/agents\`, \`pstack/${G
 Cursor uses \`pstack/\` directly, and Claude Code installs \`${TREE}/\`. The tree leaves out the rest of \`pstack/\`, such as \`pstack/automations\` and \`pstack/assets\`. A relative link to a pstack file that the tree leaves out points at that file on GitHub \`main\` instead.
 
 After editing those sources, run \`${COMMAND}\` from the repository root and commit the result.
+
+GitHub Copilot uses the separately generated \`github-copilot/\` tree. Its adapter,
+per-skill compatibility matrix, resource provenance, and evidence are generated
+by \`scripts/pstack-copilot.mjs\` from the same original sources plus
+\`pstack/docs/harness/copilot/\`. Neither tree is a runtime compatibility claim.
 `;
 
 const TERMS = [
@@ -61,7 +68,7 @@ function walk(dir) {
 }
 
 function file(path) {
-  return { bytes: readFileSync(path), executable: (statSync(path).mode & 0o111) !== 0 };
+  return { bytes: portableBytes(path), executable: executable(path) };
 }
 
 const skills = readdirSync(SKILLS).filter((name) => existsSync(join(SKILLS, name, "SKILL.md")));
@@ -91,7 +98,7 @@ for (const [skill, { usesCursorNames, wrap }] of classes) {
   if (usesCursorNames.size > 0 && !wrap) problems.push(`skills/${skill}/SKILL.md uses Cursor names but has no H1`);
   for (const key of usesCursorNames) users.set(key, [...(users.get(key) ?? []), skill]);
   // Cursor runs a skill by its folder name and Claude Code lists it by its frontmatter `name`, so the two must match. The Agent Skills spec limits both to SKILL_NAME.
-  const frontmatter = readFileSync(join(SKILLS, skill, "SKILL.md"), "utf8").match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
+  const frontmatter = portableBytes(join(SKILLS, skill, "SKILL.md")).toString("utf8").match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
   const name = frontmatter.match(/^name:(.*)$/m)?.[1].trim().replace(/^(["'])(.*)\1$/, "$2");
   if (name !== skill) problems.push(`skills/${skill}/SKILL.md has name ${JSON.stringify(name ?? "")}, not its folder name ${skill}`);
   if (!SKILL_NAME.test(skill) || skill.length > 64) problems.push(`skills/${skill} is not lowercase words joined by hyphens, at most 64 characters`);
@@ -124,7 +131,7 @@ function render() {
     join(PSTACK, ADAPTER),
     join(PSTACK, "README.md"),
   ];
-  const files = new Map(copies.map((path) => [relative(PSTACK, path), file(path)]));
+  const files = new Map(copies.map((path) => [relative(PSTACK, path).split("\\").join("/"), file(path)]));
   const line =
     `In Claude Code, read [the Claude Code adapter](../../${ADAPTER}) once per session before you follow this skill. ` +
     "It maps the Cursor names in pstack skills to Claude Code.";
@@ -152,6 +159,7 @@ function render() {
 // Links to pstack files that the tree leaves out already point at GitHub, so a failure here is a link that leaves pstack/.
 const files = render();
 const rendered = new Map([["README.md", { bytes: Buffer.from(README), executable: false }]]);
+for (const [path, entry] of renderCopilot(PSTACK, skills)) rendered.set(path, entry);
 const dangling = [];
 for (const [path, entry] of files) {
   rendered.set(`${TREE}/${path}`, entry);
@@ -165,10 +173,10 @@ for (const link of dangling) console.log(`FAIL ${link}`);
 if (dangling.length > 0) process.exit(1);
 
 if (process.argv.includes("--check")) {
-  const onDisk = new Map(existsSync(OUT) ? walk(OUT).map((path) => [relative(OUT, path), file(path)]) : []);
+  const onDisk = new Map(existsSync(OUT) ? walk(OUT).map((path) => [relative(OUT, path).split("\\").join("/"), file(path)]) : []);
   const drifted = [...new Set([...rendered.keys(), ...onDisk.keys()])].sort().filter((path) => {
     const [want, have] = [rendered.get(path), onDisk.get(path)];
-    return !want || !have || !want.bytes.equals(have.bytes) || want.executable !== have.executable;
+    return !want || !have || !want.bytes.equals(have.bytes) || (process.platform !== "win32" && want.executable !== have.executable);
   });
   for (const path of drifted.slice(0, 20)) console.log(`harness/pstack/${path}`);
   if (drifted.length > 0) {
@@ -177,7 +185,7 @@ if (process.argv.includes("--check")) {
   }
   console.log("harness/pstack is up to date.");
 } else {
-  rmSync(OUT, { recursive: true, force: true });
+  for (const tree of [TREE, COPILOT_TREE]) rmSync(join(OUT, tree), { recursive: true, force: true });
   for (const [path, { bytes, executable }] of rendered) {
     mkdirSync(dirname(join(OUT, path)), { recursive: true });
     writeFileSync(join(OUT, path), bytes);

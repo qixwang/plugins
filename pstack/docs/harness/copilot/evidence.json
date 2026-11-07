@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-07",
+  "host": "Windows 11 x64",
+  "cli": "GitHub Copilot CLI 1.0.105",
+  "node": "v24.22.2",
+  "desktopRuntime": "unexecuted; no global plugin installation performed",
+  "loader": {
+    "status": "runtime-verified",
+    "method": "copilot --plugin-dir <local-generated-tree> plugin list --json; skill list --json",
+    "plugin": "pstack",
+    "version": "0.15.36",
+    "source": "external",
+    "enabled": true,
+    "originalSkillsDiscovered": 58,
+    "note": "Discovery includes two stop-only unsupported entries; loading is not proof that those workflows work."
+  },
+  "marketplace": {
+    "status": "runtime-verified",
+    "scope": "Fresh session-artifact COPILOT_HOME and COPILOT_CACHE_HOME, not personal/global configuration",
+    "method": "copilot plugin marketplace add <local fork checkout>; copilot plugin marketplace browse qixwang-pstack-copilot --json",
+    "result": "Selected the separate .github/plugin/marketplace.json catalog and listed pstack.",
+    "limitations": "No plugin installed, no remote branch marketplace fetch and no desktop installation tested."
+  },
+  "skills": {
+    "create-verification-skill": {
+      "status": "runtime-verified",
+      "scenario": "One Copilot prompt generated a project-local skill, three feature files and a Node helper for the controlled CLI fixture, read the adapter and all feature-map references, executed add/list/complete/list, and retained actual persistence snapshots after cleanup.",
+      "fixture": "scripts/test/fixtures/verification-cli",
+      "generatedEntry": "scripts/test/fixtures/verification-cli/.github/skills/verify-verification-cli/SKILL.md",
+      "proof": "pstack/docs/harness/copilot/proof/fixture-journey.json",
+      "independentCheck": "node --test scripts/test/pstack-copilot.test.mjs",
+      "limitations": "Verified only on a Node-only local CLI on Windows, not a real user's app. Browser, desktop UI, mobile, auth, remote deployment and other projects remain unexecuted.",
+      "permissions": "No model overrides; task tool excluded; writes and node shell execution scoped by prompt to controlled fixture; no global install, network, git writes or external service actions."
+    }
+  },
+  "agents": {
+    "comment-sicko": {
+      "status": "runtime-verified",
+      "invocation": "copilot --plugin-dir <tree> --agent pstack:comment-sicko --available-tools view -p <bounded prompt with absolute adapter path>",
+      "result": "Read mandatory adapter and fixture app.mjs; prescribed opening appeared; zero comment deletion recommendations and no edits.",
+      "limitations": "Top-level CLI agent selection only. task agent_type discovery/delegation, substantive comment review and desktop invocation remain unexecuted.",
+      "failedAttempt": "First selected-agent prompt lacked an absolute adapter path. It blocked on unresolved/denied relative access, inspected no app code and made no writes. Explicit absolute-path retry succeeded; no denial bypass."
+    },
+    "poteto-agent": {
+      "status": "static-only",
+      "limitations": "Namespaced file, contract and parent-owned scope checked; no runtime invocation executed."
+    }
+  },
+  "promptSessions": {
+    "count": 3,
+    "cliReportedAiCredits": 22.81,
+    "notes": "One generator run, one blocked agent path-resolution attempt, one bounded absolute-path retry. No fleet, dynamic workflow, multi-model panel or overnight run."
+  }
+}

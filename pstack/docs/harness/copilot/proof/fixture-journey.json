@@ -1,0 +1,190 @@
+{
+  "note": "Observed CLI results; absolute host paths redacted. Raw evidence remains locally in the ignored fixture evidence directory.",
+  "helperSha256": "59440c91aafaddc79b9b6428216bb3bf5035f09451d36101f180546c5bf708cb",
+  "generatorSourceSha256": "d353973547bf8ad8977eca645f4cd4feaed0d32f4b43d1448f906b0a76c4d694",
+  "report": {
+    "runId": "0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+    "fixture": "$FIXTURE/",
+    "app": "$FIXTURE/app.mjs",
+    "node": "v24.22.2",
+    "dataDirectory": "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+    "status": "ready",
+    "commands": [
+      {
+        "featureIds": [
+          "list-empty",
+          "list-read-only"
+        ],
+        "executable": "$NODE_EXECUTABLE",
+        "args": [
+          "$FIXTURE/app.mjs",
+          "--data-dir",
+          "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+          "list"
+        ],
+        "cwd": "$FIXTURE/",
+        "stdout": "[]\n",
+        "stderr": "",
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "featureIds": [
+          "add-create",
+          "add-persist"
+        ],
+        "executable": "$NODE_EXECUTABLE",
+        "args": [
+          "$FIXTURE/app.mjs",
+          "--data-dir",
+          "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+          "add",
+          "Review adapter"
+        ],
+        "cwd": "$FIXTURE/",
+        "stdout": "{\"id\":1,\"title\":\"Review adapter\",\"done\":false}\n",
+        "stderr": "",
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "featureIds": [
+          "list-pending"
+        ],
+        "executable": "$NODE_EXECUTABLE",
+        "args": [
+          "$FIXTURE/app.mjs",
+          "--data-dir",
+          "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+          "list"
+        ],
+        "cwd": "$FIXTURE/",
+        "stdout": "[{\"id\":1,\"title\":\"Review adapter\",\"done\":false}]\n",
+        "stderr": "",
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "featureIds": [
+          "complete-task",
+          "complete-persist"
+        ],
+        "executable": "$NODE_EXECUTABLE",
+        "args": [
+          "$FIXTURE/app.mjs",
+          "--data-dir",
+          "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+          "complete",
+          "1"
+        ],
+        "cwd": "$FIXTURE/",
+        "stdout": "{\"id\":1,\"title\":\"Review adapter\",\"done\":true}\n",
+        "stderr": "",
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      {
+        "featureIds": [
+          "list-completed"
+        ],
+        "executable": "$NODE_EXECUTABLE",
+        "args": [
+          "$FIXTURE/app.mjs",
+          "--data-dir",
+          "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7",
+          "list"
+        ],
+        "cwd": "$FIXTURE/",
+        "stdout": "[{\"id\":1,\"title\":\"Review adapter\",\"done\":true}]\n",
+        "stderr": "",
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      }
+    ],
+    "assertions": [
+      "App entry is a regular file",
+      "Doctor starts with no data directory",
+      "list exits with code 0",
+      "list is not terminated by a signal",
+      "list has empty stderr",
+      "Doctor lists an empty store",
+      "Doctor did not create a data directory",
+      "Doctor did not create tasks.json",
+      "Launch owns an empty data directory",
+      "add exits with code 0",
+      "add is not terminated by a signal",
+      "add has empty stderr",
+      "Add returns the exact pending task",
+      "after-add: tasks.json is a regular file",
+      "after-add: persisted array and exact task shape",
+      "list exits with code 0",
+      "list is not terminated by a signal",
+      "list has empty stderr",
+      "A fresh list process returns the pending task",
+      "Pending list does not change persisted bytes",
+      "complete exits with code 0",
+      "complete is not terminated by a signal",
+      "complete has empty stderr",
+      "Complete returns the same task marked done",
+      "after-complete: tasks.json is a regular file",
+      "after-complete: persisted array and exact task shape",
+      "list exits with code 0",
+      "list is not terminated by a signal",
+      "list has empty stderr",
+      "Another fresh list process returns the completed task",
+      "Completed list does not change persisted bytes",
+      "final: tasks.json is a regular file",
+      "final: persisted array and exact task shape",
+      "Cleanup targets this run's exact child directory",
+      "Cleanup data directory is not a symlink",
+      "Cleanup leaves no run data directory",
+      "Evidence report survives cleanup",
+      "after-add: evidence survives cleanup",
+      "after-complete: evidence survives cleanup",
+      "final: evidence survives cleanup"
+    ],
+    "snapshots": [
+      {
+        "name": "after-add",
+        "source": "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7/tasks.json",
+        "path": "$FIXTURE/.github/skills/verify-verification-cli/evidence/0578f72a-1f62-47cc-9ab0-a4b651772cb7/after-add.tasks.json",
+        "tasks": [
+          {
+            "id": 1,
+            "title": "Review adapter",
+            "done": false
+          }
+        ]
+      },
+      {
+        "name": "after-complete",
+        "source": "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7/tasks.json",
+        "path": "$FIXTURE/.github/skills/verify-verification-cli/evidence/0578f72a-1f62-47cc-9ab0-a4b651772cb7/after-complete.tasks.json",
+        "tasks": [
+          {
+            "id": 1,
+            "title": "Review adapter",
+            "done": true
+          }
+        ]
+      },
+      {
+        "name": "final",
+        "source": "$FIXTURE/.github/skills/verify-verification-cli/run-data-0578f72a-1f62-47cc-9ab0-a4b651772cb7/tasks.json",
+        "path": "$FIXTURE/.github/skills/verify-verification-cli/evidence/0578f72a-1f62-47cc-9ab0-a4b651772cb7/final.tasks.json",
+        "tasks": [
+          {
+            "id": 1,
+            "title": "Review adapter",
+            "done": true
+          }
+        ]
+      }
+    ]
+  }
+}

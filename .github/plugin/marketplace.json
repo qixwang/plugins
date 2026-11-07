@@ -1,0 +1,16 @@
+{
+  "name": "qixwang-pstack-copilot",
+  "owner": { "name": "qixwang" },
+  "metadata": {
+    "description": "Personal-fork Copilot adaptation of pstack; compatibility is scenario-scoped.",
+    "version": "0.15.36"
+  },
+  "plugins": [
+    {
+      "name": "pstack",
+      "version": "0.15.36",
+      "description": "Copilot-adapted pstack with explicit compatibility and verification evidence.",
+      "source": "./harness/pstack/github-copilot"
+    }
+  ]
+}

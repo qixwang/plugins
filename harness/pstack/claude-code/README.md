@@ -33,6 +33,13 @@ claude code installs a generated copy of pstack, including this readme and the g
 
 ## get started
 
+**Personal-fork GitHub Copilot adaptation:** use the separate generated
+`harness/pstack/github-copilot` tree, not this Cursor entry tree. Read the
+[installation and verification instructions](https://github.com/qixwang/plugins/blob/copilot-adaptation/pstack/docs/harness/copilot-installation.md)
+and [auditable change record](https://github.com/qixwang/plugins/blob/copilot-adaptation/pstack/docs/harness/copilot-changes.md). Compatibility
+is explicitly per skill and scenario; the original defaults below are not
+Copilot model or authorization settings.
+
 two steps:
 
 1. run [`/setup-pstack`](./skills/setup-pstack/SKILL.md), pick a reasoning budget, and choose which models you want.
